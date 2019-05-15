@@ -1,4 +1,4 @@
-package com.blogspot.jesfre;
+package com.blogspot.jesfre.yourtunnel;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
