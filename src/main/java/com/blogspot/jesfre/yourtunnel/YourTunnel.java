@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.blogspot.jesfre.yourtunnel;
 
 import com.blogspot.jesfre.yourtunnel.elements.LocalUserInfo;
@@ -22,33 +19,30 @@ public class YourTunnel {
 	public static void main(String[] args) {
 		YourTunnel t = new YourTunnel();
 		try {
-			t.go(t.server);
+			t.connect(t.server);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	public void go(ServerData server) throws Exception {
+	public void connect(ServerData server) throws Exception {
 		server = ServerData.builder()
 				.host(using.host())
 				.port(using.remotePort())
 				.build();
 		
-		String user = "xxxxxx";
-		String password = "xxxxxx";
-
-		// SSH server info
-		String host = "xxxxx";
-		int port = 22;
+		ServerData sshServer = ServerData.builder()
+				.host("xxxxx")
+				.port(22)
+				.username("uuuuu")
+				.password("ppppp")
+				.build();
 
 		int tunnelLocalPort = using.localPort();
 
-		String tunnelRemoteHost = server.getHost();
-		int tunnelRemotePort = server.getPort();
-
 		JSch jsch = new JSch();
-		Session session = jsch.getSession(user, host, port);
-		session.setPassword(password);
+		Session session = jsch.getSession(sshServer.getUsername(), sshServer.getHost(), sshServer.getPort());
+		session.setPassword(sshServer.getPassword());
 		java.util.Properties config = new java.util.Properties();
 		config.put("PreferredAuthentications", "password");
 		config.put("StrictHostKeyChecking", "no");
@@ -56,7 +50,7 @@ public class YourTunnel {
 		UserInfo lui = new LocalUserInfo();
 		session.setUserInfo(lui);
 		session.connect();
-		session.setPortForwardingL(tunnelLocalPort, tunnelRemoteHost, tunnelRemotePort);
+		session.setPortForwardingL(tunnelLocalPort, server.getHost(), server.getPort());
 		System.out.println("Connected to " + using.name() + ":" + using.host() + ":" + using.remotePort() + " through port " + using.localPort());
 
 	}
